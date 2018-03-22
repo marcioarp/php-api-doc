@@ -1,0 +1,31 @@
+{
+	"name": "marcioarp/php-api-doc",
+	"version": "1.0.0",
+	"type": "library",	
+	"keywords": [
+		"PHP",
+		"API",
+		"Documentation",
+		"Doc"
+	],
+	"homepage": "https://github.com/marcioarp/php-api-doc",
+	"description": "Auto Documentation API  ",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Márcio Rossato",
+			"email": "marcioarp@gmail.com",
+			"homepage": "http://www.marciorossato.com.br",
+			"role": "Creator"
+		}
+	],
+	"require": {
+		"php": "^7.0 || ^5.4"
+	},
+	"minimum-stability":"dev",
+	"autoload" : {
+		"psr-4":{
+			"php_api_doc\\":["src/"]
+		}
+	}
+}
