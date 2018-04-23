@@ -6,37 +6,56 @@ class APIDoc {
 
 	var $path = '';
 
-	public function saveSample($url, $query, $params, $jsonSend, $jsonResponse, $method = 'POST') {
+	public function saveSample($package, $class, $query, $params, $jsonSend, $jsonResponse, $method = 'POST', $version=false) {
+		if ($version) {
+			$path = $this->path .$version.DIRECTORY_SEPARATOR;
+		} else {
+			$path = $this->path;
+		}
+		$path .=  
+			str_replace('/', DIRECTORY_SEPARATOR, $package).DIRECTORY_SEPARATOR.
+			$class.DIRECTORY_SEPARATOR.
+			$method.DIRECTORY_SEPARATOR
+		;
+		
 
-		$path = $this->path . $url;
+		
 		$this->recursive_mkdir($path);
 		for ($i = 0; $i, 100; $i++) {
 			$pathTemp = $path . DIRECTORY_SEPARATOR . str_pad($i, 2, '0', STR_PAD_LEFT);
 			if (!is_dir($pathTemp)) {
 				$this->recursive_mkdir($pathTemp);
 
-				$params = print_r($params, true);
+				if (is_array($params))
+					$params = implode('/',$params);
 				$fp = fopen($pathTemp . DIRECTORY_SEPARATOR . 'parameters.txt', 'w+');
 				//echo $pathTemp.'/parameters.txt'; exit;
 				fputs($fp, $params, strlen($params));
 				fclose($fp);
 
 				//$data = json_decode($data,true);
-				if (is_array($jsonSend)) 
-					$jsonSend = json_encode($jsonSend);
-				$fp = fopen($pathTemp . DIRECTORY_SEPARATOR . 'send.json', 'w+');
-				fputs($fp, $jsonSend, strlen($data));
-				fclose($fp);
+				if (isset($jsonSend)) {
+					if (is_array($jsonSend)) 
+						$jsonSend = json_encode($jsonSend);
+					
+					$fp = fopen($pathTemp . DIRECTORY_SEPARATOR . 'send.json', 'w+');
+					fputs($fp, $jsonSend, strlen($jsonSend));
+					fclose($fp);
+				}
 
-				$fp = fopen($pathTemp . DIRECTORY_SEPARATOR . 'query.txt', 'w+');
-				fputs($fp, $query, strlen($query));
-				fclose($fp);
+				if (isset($query)) {
+					$fp = fopen($pathTemp . DIRECTORY_SEPARATOR . 'query.txt', 'w+');
+					fputs($fp, $query, strlen($query));
+					fclose($fp);
+				}
 
-				if (is_array($jsonResponse)) 
-					$jsonResponse = json_encode($jsonResponse);
-				$fp = fopen($pathTemp . DIRECTORY_SEPARATOR . 'response.json', 'w+');
-				fputs($fp, $jsonResponse, strlen($jsonResponse));
-				fclose($fp);
+				if (isset($jsonResponse)) {
+					if (is_array($jsonResponse)) 
+						$jsonResponse = json_encode($jsonResponse);
+					$fp = fopen($pathTemp . DIRECTORY_SEPARATOR . 'response.json', 'w+');
+					fputs($fp, $jsonResponse, strlen($jsonResponse));
+					fclose($fp);
+				}
 
 				return true;
 			}
@@ -65,6 +84,10 @@ class APIDoc {
 		}
 		umask($old);
 		return true;
+	}
+	
+	public function compileDocsFromSample($pathSample, $pathDestDoc, $version='all') {
+		echo $pathDestDoc;
 	}
 
 }
